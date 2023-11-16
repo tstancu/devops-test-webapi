@@ -16,7 +16,7 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
-    - name: Install dependencies
+    - name: Restore dependencies
       run: dotnet restore
     - name: Test with dotnet
       run: dotnet test --logger trx --results-directory "TestResults-${{ matrix.dotnet-version }}"
@@ -27,7 +27,7 @@ jobs:
         path: TestResults-${{ matrix.dotnet-version }}
       if: ${{ always() }}
     - name: Publish
-      run: dotnet publish --no-build -c Release -o test-webapi-${{ matrix.dotnet-version }}
+      run: dotnet publish -c Release -o test-webapi-${{ matrix.dotnet-version }}
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with: 
