@@ -26,4 +26,11 @@ jobs:
         name: dotnet-results-${{ matrix.dotnet-version }}
         path: TestResults-${{ matrix.dotnet-version }}
       if: ${{ always() }}
+    - name: Publish
+      run: dotnet --no-build -c Release -o test-webapi-${{ matrix.dotnet-version }}
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with: 
+       name: artifact
+       path: "test-webapi-${{ matrix.dotnet-version }}"
 
