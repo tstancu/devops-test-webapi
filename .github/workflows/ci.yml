@@ -54,7 +54,6 @@ jobs:
       uses: hashicorp-contrib/setup-packer@v1
     - name: Build image from template
       run: >
-        packer init
         packer build
         -var="client_id=${{ secrets.CLIENT_ID }}"
         -var="client_secret=${{ secrets.CLIENT_SECRET }}"
