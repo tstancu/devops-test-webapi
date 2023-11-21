@@ -23,3 +23,10 @@ bld/
 msbuild.log
 msbuild.err
 msbuild.wrn
+
+# Terraform artifacts
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfplan
+terraform.log
