@@ -6,7 +6,7 @@ on:
     - main
 
 env:
-  DOTNET_VERSION: '6.0.x'
+  DOTNET_VERSION: '7.0.x'
   APP_PACKAGE_NAME: 'app-package'
   RESOURCE_GROUP_NAME: 'PackerTest'
   APP_NAME: 'WebApiTest'
