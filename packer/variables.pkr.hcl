@@ -25,3 +25,14 @@ variable "resource_group_name" {
 variable "image_name" {
   type = string
 }
+variable "service_name" {
+  type = string
+}
+
+variable "executable_name" {
+  type = string
+}
+
+variable "app_name" {
+  type = string
+}
