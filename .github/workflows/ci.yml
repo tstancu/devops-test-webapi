@@ -11,6 +11,7 @@ env:
   RESOURCE_GROUP_NAME: 'PackerTest'
   APP_NAME: 'WebApiTest'
   IMAGE_NAME: 'WebApiTestImage'
+  EXECUTABLE_NAME: 'ContosoPizza'
 
 jobs:
   build-source:
@@ -63,6 +64,6 @@ jobs:
         -var="image_name=${{ env.IMAGE_NAME }}"
         -var="app_path=./app-package/"
         -var="service_name=${{ env.APP_NAME }}"
-        -var="executable_name=${{ env.APP_NAME }}"
+        -var="executable_name=${{ env.EXECUTABLE_NAME }}"
         ./packer
 
