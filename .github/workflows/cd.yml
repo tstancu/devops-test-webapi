@@ -22,8 +22,8 @@ jobs:
     env:
       ARM_SKIP_PROVIDER_REGISTRATION: true
     outputs:
-      tfplanPath: ${{ steps.tf-plan.outputs.tfplanPath }}
-      tfplanSummary: ${{ steps.tf-plan.outputs.tfplanSummary }}
+      tfplanPath: ${{ steps.tf-plan.outputs.artifactPath }}
+      tfplanSummary: ${{ steps.tf-plan.outputs.summary }}
 
     steps:
     - name: Checkout
@@ -62,9 +62,8 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: main.tfplan
-        path: main.tfplan
-        working-directory: ./terraform
-        
+        path: ./terraform/main.tfplan
+
     - name: Create String Output
       id: tf-plan-string
       run: |
@@ -117,7 +116,6 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: main.tfplan
-        path: ./terraform/main.tfplan
 
     - name: Terraform Apply
       run: |
