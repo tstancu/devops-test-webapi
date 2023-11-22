@@ -15,20 +15,20 @@ terraform {
 
 # Configure the Microsoft Azure Provider
 provider "azurerm" {
-  subscription_id = "1796c203-68c3-4d51-9338-64ad00425a47"
-  client_id       = "3f73ce9f-4468-4579-a8d2-2b0b0d6e5091"
-  client_secret   = "wp68Q~vMpb_AroOsjpe7UAa6LW343IM8TgMuobpa"
-  tenant_id       = "db5794d0-d9bd-400e-b212-6a911bb3f5d1"
+  client_id       = var.client_id
+  client_secret   = var.client_secret
+  subscription_id = var.subscription_id
+  tenant_id       = var.tenant_id
 
   features {}
 }
 
 data "azurerm_resource_group" "main" {
-  name = "PackerTest"
+  name = var.resource_group_name
 }
 
 data "azurerm_image" "image" {
-  name                = "ws2022"
+  name                = var.image_name
   resource_group_name = data.azurerm_resource_group.main.name
 }
 
