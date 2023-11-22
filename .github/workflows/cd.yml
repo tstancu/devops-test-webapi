@@ -46,9 +46,7 @@ jobs:
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
-      run: |
-          cd ./terraform
-          terraform init
+      run: terraform init
 
     # Checks that all Terraform configuration files adhere to a canonical format
     # Will fail the build if not
@@ -59,26 +57,27 @@ jobs:
     # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes.
     - name: Terraform Plan
       id: tf-plan
-      run: |
-        cd ./terraform
-        export exitcode=0
-        terraform plan -detailed-exitcode -no-color || export exitcode=$?
+      run: terraform plan -no-color
+      
+      # |
+      #   export exitcode=0
+      #   terraform plan -detailed-exitcode -no-color || export exitcode=$?
 
-        echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
+      #   echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
         
-        if [ $exitcode -eq 1 ]; then
-          echo Terraform Plan Failed!
-          exit 1
-        else 
-          exit 0
-        fi
+      #   if [ $exitcode -eq 1 ]; then
+      #     echo Terraform Plan Failed!
+      #     exit 1
+      #   else 
+      #     exit 0
+      #   fi
         
     # Save plan to artifacts  
-    - name: Publish Terraform Plan
-      uses: actions/upload-artifact@v3
-      with:
-        name: main.tfplan
-        path: main.tfplan
+    # - name: Publish Terraform Plan
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: main.tfplan
+    #     path: main.tfplan
         
     # # Create string output of Terraform Plan
     # - name: Create String Output
@@ -99,11 +98,11 @@ jobs:
     #     echo "${delimiter}" >> $GITHUB_OUTPUT
         
     # Publish Terraform Plan as task summary
-    - name: Publish Terraform Plan to Task Summary
-      env:
-        SUMMARY: ${{ steps.tf-plan-string.outputs.summary }}
-      run: |
-        echo "$SUMMARY" >> $GITHUB_STEP_SUMMARY
+    # - name: Publish Terraform Plan to Task Summary
+    #   env:
+    #     SUMMARY: ${{ steps.tf-plan-string.outputs.summary }}
+    #   run: |
+    #     echo "$SUMMARY" >> $GITHUB_STEP_SUMMARY
         
   # terraform-apply:
   #   name: 'Terraform Apply'
@@ -114,8 +113,8 @@ jobs:
     
     # steps:
     # Checkout the repository to the GitHub Actions runner
-    - name: Checkout
-      uses: actions/checkout@v3
+    # - name: Checkout
+    #   uses: actions/checkout@v3
 
     # # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     # - name: Setup Terraform
