@@ -84,6 +84,7 @@ jobs:
     - name: Create String Output
       id: tf-plan-string
       run: |
+        cd ./terraform
         TERRAFORM_PLAN=$(terraform show -no-color tfplan)
         
         delimiter="$(openssl rand -hex 8)"
@@ -123,7 +124,9 @@ jobs:
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
-      run: terraform init
+      run: |
+        cd ./terraform
+        terraform init
 
     # Download saved plan from artifacts  
     - name: Download Terraform Plan
@@ -133,4 +136,6 @@ jobs:
 
     # Terraform Apply
     - name: Terraform Apply
-      run: terraform apply -auto-approve tfplan
+      run: |
+        cd ./terraform
+        terraform apply -auto-approve tfplan
