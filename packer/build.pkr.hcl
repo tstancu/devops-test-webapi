@@ -4,9 +4,9 @@ source "azure-arm" "win_vm" {
   tenant_id                         = var.tenant_id
   subscription_id                   = var.subscription_id
 
-  location                          = "East US"
+  location                          = var.location
   managed_image_name                = var.image_name
-  managed_image_resource_group_name = "PackerTest"
+  managed_image_resource_group_name = var.resource_group_name
 
   
   communicator                      = "winrm"
@@ -20,6 +20,17 @@ source "azure-arm" "win_vm" {
   winrm_timeout                     = "15m"
   winrm_use_ssl                     = true
   winrm_username                    = "packer"
+
+  shared_image_gallery_destination {
+    subscription   = var.subscription_id
+    resource_group = var.resource_group_name
+    gallery_name   = "galTest"
+    image_name     = var.image_name
+    image_version  = "1.0.0"
+    replication_regions = [
+      var.location
+    ]
+  }
 }
 
 build {
@@ -34,5 +45,9 @@ build {
         "while($true) { $imageState = Get-ItemProperty HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Setup\\State | Select ImageState; if($imageState.ImageState -ne 'IMAGE_STATE_GENERALIZE_RESEAL_TO_OOBE') { Write-Output $imageState.ImageState; Start-Sleep -s 10  } else { break } }"
         ]
   }
+<<<<<<< Updated upstream
+=======
+  
+>>>>>>> Stashed changes
 }
 

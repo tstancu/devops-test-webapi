@@ -32,7 +32,6 @@ data "azurerm_image" "image" {
   resource_group_name = data.azurerm_resource_group.main.name
 }
 
-
 # Create virtual network
 resource "azurerm_virtual_network" "my_terraform_network" {
   name                = "${random_pet.prefix.id}-vnet"
@@ -137,4 +136,10 @@ resource "random_password" "password" {
 resource "random_pet" "prefix" {
   prefix = var.prefix
   length = 1
+}
+
+resource "random_string" "string" {
+    length  = 8
+    upper   = false
+    special = false
 }

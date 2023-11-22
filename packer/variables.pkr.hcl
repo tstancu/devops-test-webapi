@@ -36,3 +36,8 @@ variable "executable_name" {
 variable "app_path" {
   type = string
 }
+
+variable "location" {
+  type = string
+  default = "East US"
+}
