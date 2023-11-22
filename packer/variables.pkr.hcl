@@ -33,6 +33,6 @@ variable "executable_name" {
   type = string
 }
 
-variable "app_name" {
+variable "app_path" {
   type = string
 }
