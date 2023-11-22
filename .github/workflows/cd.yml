@@ -37,8 +37,6 @@ jobs:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v3
-      with:
-        path: './terraform/'
 
     # Install the latest version of the Terraform CLI
     - name: Setup Terraform
@@ -60,6 +58,7 @@ jobs:
     - name: Terraform Plan
       id: tf-plan
       run: |
+        cd ./terraform
         export exitcode=0
         terraform plan -detailed-exitcode -no-color -out tfplan || export exitcode=$?
 
@@ -115,8 +114,6 @@ jobs:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v3
-      with:
-        path: 'terraform'
 
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
