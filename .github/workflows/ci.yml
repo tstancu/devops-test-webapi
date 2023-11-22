@@ -10,7 +10,7 @@ env:
   APP_PACKAGE_NAME: 'app-package'
   RESOURCE_GROUP_NAME: 'PackerTest'
   APP_NAME: 'WebApiTest'
-  IMAGE_NAME: 'WebApiTest-${{ github.run_id }}'
+  IMAGE_NAME: 'WebApiTestImage'
 
 jobs:
   build-source:
