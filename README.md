@@ -47,3 +47,15 @@ az sig image-definition create --resource-group $rgname --gallery-name $galleryn
 
 \# Run Terraform Plan/Apply action
 
+# Notes
+
+## What does not work
+
+* I am having trouble with embedding the app in the image. I tried to publish/upload/download the app via workflow and copy it to the new image, but didn't work properly.
+* The resources need to be destroyed in order to recreate them. This is not done automatically yet.
+
+## Different outcomes
+
+* I wanted to also create the VM via Terraform instead of Portal or Az shell. It works
+
+
