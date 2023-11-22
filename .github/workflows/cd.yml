@@ -62,7 +62,7 @@ jobs:
       run: |
         cd ./terraform
         export exitcode=0
-        terraform plan -detailed-exitcode -no-color -out tfplan || export exitcode=$?
+        terraform plan -detailed-exitcode -no-color -out main.tfplan || export exitcode=$?
 
         echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
         
@@ -77,8 +77,8 @@ jobs:
     - name: Publish Terraform Plan
       uses: actions/upload-artifact@v3
       with:
-        name: tfplan
-        path: tfplan
+        name: main.tfplan
+        path: main.tfplan
         
     - name: List directory contents
       run: ls -R
@@ -138,10 +138,10 @@ jobs:
     - name: Download Terraform Plan
       uses: actions/download-artifact@v3
       with:
-        name: tfplan
+        name: main.tfplan
 
     # Terraform Apply
     - name: Terraform Apply
       run: |
         cd ./terraform
-        terraform apply -auto-approve tfplan
+        terraform apply -auto-approve main.tfplan
