@@ -80,15 +80,12 @@ jobs:
         name: main.tfplan
         path: main.tfplan
         
-    - name: List directory contents
-      run: ls -R
-        
     # Create string output of Terraform Plan
     - name: Create String Output
       id: tf-plan-string
       run: |
         cd ./terraform
-        TERRAFORM_PLAN=$(terraform show -no-color tfplan)
+        TERRAFORM_PLAN=$(terraform show -no-color main.tfplan)
         
         delimiter="$(openssl rand -hex 8)"
         echo "summary<<${delimiter}" >> $GITHUB_OUTPUT
@@ -108,6 +105,8 @@ jobs:
       run: |
         echo "$SUMMARY" >> $GITHUB_STEP_SUMMARY
 
+    - name: List directory contents
+      run: ls -R
                
   terraform-apply:
     name: 'Terraform Apply'
