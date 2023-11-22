@@ -1,53 +1,68 @@
 name: 'Terraform Plan/Apply'
 
 on:
-  workflow_dispatch:
+    workflow_dispatch:
+#   push:
+#     branches:
+#     - main
+#   pull_request:
+#     branches:
+#     - main
 
+#Special permissions required for OIDC authentication
 permissions:
   id-token: write
   contents: read
   pull-requests: write
 
+#These environment variables are used by the terraform azure provider to setup OIDD authenticate. 
 env:
-  TF_VAR_client_id: ${{ secrets.CLIENT_ID }}
-  TF_VAR_client_secret: ${{ secrets.CLIENT_SECRET }}
-  TF_VAR_subscription_id: ${{ secrets.SUBSCRIPTION_ID }}
-  TF_VAR_tenant_id: ${{ secrets.TENANT_ID }}
-  TF_VAR_image_name: 'WebApiTestImage'
+    TF_VAR_client_id: ${{ secrets.CLIENT_ID }}
+    TF_VAR_client_secret: ${{ secrets.CLIENT_SECRET }}
+    TF_VAR_subscription_id: ${{ secrets.SUBSCRIPTION_ID }}
+    TF_VAR_tenant_id: ${{ secrets.TENANT_ID }}
+    TF_VAR_image_name: 'WebApiTestImage'
 
 jobs:
   terraform-plan:
     name: 'Terraform Plan'
     runs-on: ubuntu-latest
     env:
+      #this is needed since we are running terraform with read-only permissions
       ARM_SKIP_PROVIDER_REGISTRATION: true
     outputs:
-      tfplanPath: ${{ steps.tf-plan.outputs.artifactPath }}
-      tfplanSummary: ${{ steps.tf-plan.outputs.summary }}
+      tfplanExitCode: ${{ steps.tf-plan.outputs.exitcode }}
 
     steps:
+    # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v3
 
+    # Install the latest version of the Terraform CLI
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
       with:
         terraform_wrapper: false
 
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       run: |
           cd ./terraform
           terraform init
 
+    # Checks that all Terraform configuration files adhere to a canonical format
+    # Will fail the build if not
     - name: Terraform Format
       run: terraform fmt -check
 
+    # Generates an execution plan for Terraform
+    # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes.
     - name: Terraform Plan
       id: tf-plan
       run: |
         cd ./terraform
         export exitcode=0
-        terraform plan -detailed-exitcode -no-color -out main.tfplan || export exitcode=$?
+        terraform plan -detailed-exitcode -no-color || export exitcode=$?
 
         echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
         
@@ -58,12 +73,14 @@ jobs:
           exit 0
         fi
         
+    # Save plan to artifacts  
     - name: Publish Terraform Plan
       uses: actions/upload-artifact@v3
       with:
         name: main.tfplan
-        path: ./terraform/main.tfplan
-
+        path: main.tfplan
+        
+    # Create string output of Terraform Plan
     - name: Create String Output
       id: tf-plan-string
       run: |
@@ -81,43 +98,33 @@ jobs:
         echo "</details>" >> $GITHUB_OUTPUT
         echo "${delimiter}" >> $GITHUB_OUTPUT
         
+    # Publish Terraform Plan as task summary
     - name: Publish Terraform Plan to Task Summary
       env:
         SUMMARY: ${{ steps.tf-plan-string.outputs.summary }}
       run: |
         echo "$SUMMARY" >> $GITHUB_STEP_SUMMARY
-
-    - name: List directory contents
-      run: ls -R
-               
+        
   terraform-apply:
     name: 'Terraform Apply'
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && needs.terraform-plan.outputs.tfplanExitCode == 2
     runs-on: ubuntu-latest
     environment: production
     needs: [terraform-plan]
     
     steps:
+    # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
+    # # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+    # - name: Setup Terraform
+    #   uses: hashicorp/setup-terraform@v2
 
-    - name: Terraform Init
-      run: |
-        cd ./terraform
-        terraform init
+    # # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    # - name: Terraform Init
+    #   run: terraform init
 
-    - name: List directory contents
-      run: ls -R
-
-    - name: Download Terraform Plan
-      uses: actions/download-artifact@v3
-      with:
-        name: main.tfplan
-
+    # Terraform Apply
     - name: Terraform Apply
-      run: |
-        cd ./terraform
-        terraform apply -auto-approve main.tfplan
+      run: terraform apply -auto-approve 
