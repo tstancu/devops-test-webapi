@@ -29,10 +29,10 @@ az ad sp create-for-rbac --query "{ client_id: appId, client_secret: password, t
 ```
 \# add these details as GitHub secrets
 
-CLIENT_ID
-CLIENT_SECRET
-SUBSCRIPTION_ID
-TENANT_ID
+CLIENT_ID \
+CLIENT_SECRET \
+SUBSCRIPTION_ID \
+TENANT_ID \
 
 \# create shared image gallery
 ```
@@ -53,6 +53,7 @@ az sig image-definition create --resource-group $rgname --gallery-name $galleryn
 
 * I am having trouble with embedding the app in the image. I tried to publish/upload/download the app via workflow and copy it to the new image, but didn't work properly.
 * The resources need to be destroyed in order to recreate them. This is not automated yet.
+* Probably missing lots of best practices security and code wise.
 
 ## Different outcomes
 
