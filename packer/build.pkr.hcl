@@ -43,7 +43,7 @@ build {
   provisioner "powershell" {
     inline = [
       "cd 'C:\\WebApiTest'",
-      "dotnet ${var.executable_name}.dll"
+      "dotnet ${var.executable_name}"
     ]
   }
 
